@@ -1,0 +1,14 @@
+- `ID` là khoá chính, và có thể suy ra `Year` và `City`.
+- Cột `Spending_use` bị dư => bỏ
+- Cột `Comprehension` missing nhiều (hơn 60%) nhưng không có luật để impure (nó là categorical, và không liên quan tới cột nào). => bỏ (**Xem xét**)
+- `Brand` có các cái tên như `Other...`, hay `Street...` => **Xem xét có nên gộp thành 1 không.**
+- Các cột `Spontaneous`, `Awareness` và các cột bool nếu không missing thì chứa giá trị trong `Brand` => Nếu bằng thì True, không thì False (missing tính là False vì _khả năng cao là không aware_).
+- Kiểm tra về tính logic của các cột:
+  - `Spontaneous` -> `Awareness`
+  - `Trial` -> `Awareness` (_not sure about this..._)
+  - `P1M` -> `P3M`
+  - `Daily` -> `Weekly`
+  - `Spending` == 0 <-> `Fre` == 0 (_and this..._)
+  - `PPA` = `Spending` / `Fre`
+  - Các group (`Segmentation` và `NPS`) đã theo đúng category.
+- \_Xem xét xoá cột `Spending` vì có thể được suy ra từ công thức.
