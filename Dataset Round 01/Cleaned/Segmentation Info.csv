@@ -1,5 +1,0 @@
-Segmentation ID,Segmentation Name,Average Min,Average Max
-1,Seg.01 - Mass (<VND 25K),-inf,25.0
-2,Seg.02 - Mass Asp (VND 25K - VND 59K),25.0,60.0
-3,Seg.03 - Premium (VND 60K - VND 99K),60.0,100.0
-4,Seg.04 - Super Premium (VND 100K+),100.0,inf
