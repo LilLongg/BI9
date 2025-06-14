@@ -1,7 +1,17 @@
-- `ID` là khoá chính, và có thể suy ra `Year` và `City`.
+## Customer Dataset
+
+- Các cột không dùng: `Col`, `MPI#2` (như `MPI`), `MPI_Mean_Use` (như `MPI#Mean`).
+- `Age` và `Group size`: kích thước nhỏ (0.077% và 0.128%) => Khử null bằng trung bình.
+- `MPI`: khử null bằng trung bình các mẫu thuộc chung nhóm (chia nhóm dựa vào `City`, `Gender`, `Age`, `Occupation`), không sử dụng `Year` vì các missing values tập trung nhiều vào năm 2017.
+- Các cột Category: sử dụng giá trị tương ứng để impute.
+- `BUMO`: chuyển thành `Don't have...`
+- `ID` là khoá chính, và có thể suy ra `Year` và `City` => Xoá khỏi các dataset khác.
+
+## Brand Health Dataset
+
 - Cột `Spending_use` bị dư => bỏ
 - Cột `Comprehension` missing nhiều (hơn 60%) nhưng không có luật để impure (nó là categorical, và không liên quan tới cột nào). => bỏ (**Xem xét**)
-- `Brand` có các cái tên như `Other...`, hay `Street...` => **Xem xét có nên gộp thành 1 không.**
+- `Brand` gộp `Street` chung category với `Street/Half street`, giữ lại `Other`.
 - Các cột `Spontaneous`, `Awareness` và các cột bool nếu không missing thì chứa giá trị trong `Brand` => Nếu bằng thì True, không thì False (missing tính là False vì _khả năng cao là không aware_).
 - Kiểm tra về tính logic của các cột:
   - `Spontaneous` -> `Awareness`
@@ -9,6 +19,9 @@
   - `P1M` -> `P3M`
   - `Daily` -> `Weekly`
   - `Spending` == 0 <-> `Fre` == 0 (_and this..._)
-  - `PPA` = `Spending` / `Fre`
-  - Các group (`Segmentation` và `NPS`) đã theo đúng category.
-- \_Xem xét xoá cột `Spending` vì có thể được suy ra từ công thức.
+- _Xem xét xoá cột `Spending` vì có thể được suy ra từ công thức._
+
+## Các dataset khác
+
+- Các cột categorical missing => bỏ vì số lượng ít + không có luật để impute.
+- Các cột numerical => impute về 0.

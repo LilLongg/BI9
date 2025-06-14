@@ -1,7 +1,7 @@
 import marimo
 
 __generated_with = "0.13.15"
-app = marimo.App(width="medium")
+app = marimo.App(width="medium", auto_download=["ipynb"])
 
 
 @app.cell
@@ -930,7 +930,11 @@ def _(mo):
 
 @app.cell
 def _(brand_health_df_9, pl):
-    cleaned_brand_health_df = brand_health_df_9.with_columns(pl.col("Brand").replace("Street", "Street / Half street coffee (including carts)"))
+    cleaned_brand_health_df = brand_health_df_9.with_columns(
+        pl.col("Brand").replace(
+            "Street", "Street / Half street coffee (including carts)"
+        )
+    )
     cleaned_brand_health_df["Brand"].unique().sort()
     return (cleaned_brand_health_df,)
 
@@ -961,8 +965,131 @@ def _(mo):
 
 @app.cell
 def _(DATA_DIR, pl):
-    raw_dow_df = pl.read_csv(DATA_DIR / "Dayofweek.csv", separator=";").unique()
+    raw_dow_df = (
+        pl.read_csv(DATA_DIR / "Dayofweek.csv", separator=";")
+        .drop(["City", "Year"])
+        .unique()
+    )
     raw_dow_df
+    return (raw_dow_df,)
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""#### Check for missing values""")
+    return
+
+
+@app.cell
+def _(raw_dow_df):
+    raw_dow_df.null_count()
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(
+        rf"""Since there is no way to impute `Dayofweek`, we have to remove them from the dataset."""
+    )
+    return
+
+
+@app.cell
+def _(pl, raw_dow_df):
+    remove_null_dow_df = raw_dow_df.filter(~pl.col("Dayofweek").is_null())
+    remove_null_dow_df.null_count()
+    return (remove_null_dow_df,)
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""For the number of visit, let's impute with the value 0.""")
+    return
+
+
+@app.cell
+def _(remove_null_dow_df):
+    dow_df = remove_null_dow_df.fill_null(0)
+    dow_df.null_count()
+    return (dow_df,)
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""#### Save the result""")
+    return
+
+
+@app.cell
+def _(OUTPUT_DIR, dow_df):
+    dow_df.sort("*").write_csv(OUTPUT_DIR / "dayofweek.csv")
+    dow_df
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""### Daypart Dataset""")
+    return
+
+
+@app.cell
+def _(DATA_DIR, pl):
+    raw_daypart_df = (
+        pl.read_csv(DATA_DIR / "Daypart.csv", separator=";")
+        .drop(["City", "Year"])
+        .unique()
+    )
+    raw_daypart_df
+    return (raw_daypart_df,)
+
+
+@app.cell
+def _(mo):
+    mo.md(
+        r"""#### Same as before, we remove missing records on `Daypart`, and fill `Visit` with 0."""
+    )
+    return
+
+
+@app.cell
+def _(pl, raw_daypart_df):
+    daypart_df = raw_daypart_df.filter(~pl.col("Daypart").is_null()).fill_null(0)
+    daypart_df
+    return (daypart_df,)
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""#### Save the result""")
+    return
+
+
+@app.cell
+def _(OUTPUT_DIR, daypart_df):
+    daypart_df.sort("*").write_csv(OUTPUT_DIR / "Daypart.csv")
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""### Needstate Dataset""")
+    return
+
+
+@app.cell
+def _(DATA_DIR, pl):
+    raw_needstate_daypart_df = (
+        pl.read_csv(DATA_DIR / "NeedstateDayDaypart.csv", separator=";")
+        .drop(["City", "Year"])
+        .unique()
+    )
+    return (raw_needstate_daypart_df,)
+
+
+@app.cell
+def _(OUTPUT_DIR, raw_needstate_daypart_df):
+    raw_needstate_daypart_df.sort("*").write_csv(OUTPUT_DIR / "Needstate.csv")
     return
 
 
