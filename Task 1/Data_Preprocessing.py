@@ -47,13 +47,58 @@ def _(mo):
 
 @app.cell
 def _(mo):
+    mo.md(r"""### Competitor Dataset""")
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""#### Read the dataset""")
+    return
+
+
+@app.cell
+def _(DATA_DIR, pl):
+    raw_competitor_df = pl.read_csv(
+        DATA_DIR / "Competitor database_xlnm#_FilterDatabase.csv", separator=";"
+    ).unique()
+    raw_competitor_df
+    return (raw_competitor_df,)
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""#### Check for missing values""")
+    return
+
+
+@app.cell
+def _(raw_competitor_df):
+    raw_competitor_df.null_count()
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""#### Save the result""")
+    return
+
+
+@app.cell
+def _(OUTPUT_DIR, raw_competitor_df):
+    raw_competitor_df.write_csv(OUTPUT_DIR / "competitor.csv")
+    return
+
+
+@app.cell
+def _(mo):
     mo.md(r"""### Customer Dataset""")
     return
 
 
 @app.cell
 def _(mo):
-    mo.md(r"""Read the dataset""")
+    mo.md(r"""#### Read the dataset""")
     return
 
 
@@ -365,13 +410,62 @@ def _(mpi_group_imputed_df, pl):
 
 @app.cell
 def _(mo):
-    mo.md(r"""#### Save the result""")
+    mo.md(r"""#### Save the output""")
     return
 
 
 @app.cell
 def _(OUTPUT_DIR, customer_cleaned_df):
     customer_cleaned_df.sort("*").write_csv(OUTPUT_DIR / "customer.csv")
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""### Companion Dataset""")
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""#### Read the dataset""")
+    return
+
+
+@app.cell
+def _(DATA_DIR, pl):
+    raw_companion_df = (
+        pl.read_csv(
+            DATA_DIR / "Companion.csv", separator=";", schema_overrides={"ID": str}
+        )
+        .drop(["City", "Year"])
+        .unique()
+    )
+    raw_companion_df["ID"]
+    return (raw_companion_df,)
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""#### Check for missing values""")
+    return
+
+
+@app.cell
+def _(raw_companion_df):
+    raw_companion_df.null_count()
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""#### Save the result""")
+    return
+
+
+@app.cell
+def _(OUTPUT_DIR, raw_companion_df):
+    raw_companion_df.sort("*").write_csv(OUTPUT_DIR / "companion.csv")
     return
 
 
@@ -434,7 +528,9 @@ def _(pl, raw_brand_health_df):
 
 @app.cell
 def _(mo):
-    mo.md(r"""There are no results. Indicating that they are the same. Therefore we will remove $Spending_use$.""")
+    mo.md(
+        r"""There are no results. Indicating that they are the same. Therefore we will remove $Spending_use$."""
+    )
     return
 
 
@@ -464,7 +560,9 @@ def _(mo):
 
 @app.cell
 def _(brand_health_df, mo):
-    mo.md(rf"""For `Comprehension`, since there is no way to deduce its value, and it takes up a large proportion of the dataset ({100 * brand_health_df["Comprehension"].null_count() / brand_health_df.height:.2f}%), we can consider dropping the column.""")
+    mo.md(
+        rf"""For `Comprehension`, since there is no way to deduce its value, and it takes up a large proportion of the dataset ({100 * brand_health_df["Comprehension"].null_count() / brand_health_df.height:.2f}%), we can consider dropping the column."""
+    )
     return
 
 
@@ -808,13 +906,63 @@ def _(brand_health_df_9, nps_map, pl, segmenatation_map):
 
 @app.cell
 def _(mo):
+    mo.md(r"""Let's check all of the `Brand`s""")
+    return
+
+
+@app.cell
+def _(brand_health_df_9):
+    brand_health_df_9["Brand"].unique().sort()
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(
+        r"""
+    We can see that there is a value of `Street`, which does not appear on the customer dataset.
+
+    We can modify its value to `Street / Half street coffee (including carts)`.
+    """
+    )
+    return
+
+
+@app.cell
+def _(brand_health_df_9, pl):
+    cleaned_brand_health_df = brand_health_df_9.with_columns(pl.col("Brand").replace("Street", "Street / Half street coffee (including carts)"))
+    cleaned_brand_health_df["Brand"].unique().sort()
+    return (cleaned_brand_health_df,)
+
+
+@app.cell
+def _(mo):
     mo.md(r"""#### Save the result""")
     return
 
 
 @app.cell
-def _(OUTPUT_DIR, brand_health_df_9):
-    brand_health_df_9.sort("*").write_csv(OUTPUT_DIR / "Brand Health.csv")
+def _(OUTPUT_DIR, cleaned_brand_health_df):
+    cleaned_brand_health_df.sort("*").write_csv(OUTPUT_DIR / "Brand Health.csv")
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""### Day of Week Dataset""")
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""#### Read the dataset""")
+    return
+
+
+@app.cell
+def _(DATA_DIR, pl):
+    raw_dow_df = pl.read_csv(DATA_DIR / "Dayofweek.csv", separator=";").unique()
+    raw_dow_df
     return
 
 
