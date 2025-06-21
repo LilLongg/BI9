@@ -1,0 +1,83 @@
+@startuml CoffeeShopERD
+
+' Entities and Attributes
+entity "Customer" {
+  * CustomerID : INT <<PK>>
+  --
+  City : VARCHAR
+  GroupSize : INT
+  Gender : VARCHAR
+  Occupation : VARCHAR
+  OccupationGroup : VARCHAR
+  Year : INT
+}
+
+entity "Brand" {
+  * BrandID : INT <<PK>>
+  --
+  BrandName : VARCHAR
+}
+
+entity "BrandInteraction" {
+  * InteractionID : INT <<PK>>
+  --
+  CustomerID : INT <<FK>>
+  BrandID : INT <<FK>>
+  Spontaneous : BOOLEAN
+  Awareness : BOOLEAN
+  Trial : BOOLEAN
+  P3M : BOOLEAN
+  P1M : BOOLEAN
+  NPS_P3M : INT
+  Segmentation : VARCHAR
+}
+
+entity "Store" {
+  * StoreID : INT <<PK>>
+  --
+  BrandID : INT <<FK>>
+  City : VARCHAR
+  Year : INT
+  StoreCount : INT
+}
+
+entity "CompanionGroup" {
+  * CustomerID : INT <<PK,FK>>
+  * CompanionType : VARCHAR <<PK>>
+}
+
+entity "Needstate" {
+  * NeedstateID : INT <<PK>>
+  --
+  NeedstateName : VARCHAR
+  NeedstateGroup : VARCHAR
+}
+
+entity "CustomerNeedstate" {
+  * CustomerID : INT <<FK>>
+  * NeedstateID : INT <<FK>>
+  --
+  Daypart : VARCHAR
+}
+
+entity "Visit" {
+  * VisitID : INT <<PK>>
+  --
+  CustomerID : INT <<FK>>
+  DayOfWeek : VARCHAR
+  VisitCount : INT
+  WeekdayOrWeekend : VARCHAR
+  Daypart : VARCHAR
+  VisitCountByDaypart : INT
+}
+
+' Relationships
+Customer ||--o{ BrandInteraction : "has"
+Brand ||--o{ BrandInteraction : "is interacted with"
+Brand ||--o{ Store : "has stores"
+Customer ||--o{ CompanionGroup : "visits with"
+Customer ||--o{ CustomerNeedstate : "has needstates"
+Needstate ||--o{ CustomerNeedstate : "is needed by"
+Customer ||--o{ Visit : "makes"
+
+@enduml
